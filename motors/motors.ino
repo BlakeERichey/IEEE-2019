@@ -2,9 +2,16 @@ int lfWheel = 1; //left front
 int rfWheel = 2; //right front
 int rbWheel = 3; //right back
 int lbWheel = 4; //left back
+
+int ENA = 9;  //left linear movement
+int ENB = 10; //right linear movement
  
 void setup() 
 { 
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+  //configure wheel motors
   pinMode(lfWheel, OUTPUT);
   pinMode(rfWheel, OUTPUT);
   pinMode(rbWheel, OUTPUT);
@@ -16,15 +23,36 @@ void setup()
  
  
 void loop() 
-{ 
-    int speed = 200; //0= < speed <= 255
-    if (speed >= 0 && speed <= 255){
-      analogWrite(lfWheel, speed);
-    }
+{
+  linear(false);
+  delay(5000);
+  stop_motors();
+  delay(2000);
+  linear(true);
+  delay(5000);
+  stop_motors();
+  delay(2000);
 }
 
-void moveForward(){
-  
+void stop_motors(){
+  int speed = 0;
+  analogWrite(ENA, speed);
+  analogWrite(ENB, speed);
+}
+
+void linear(bool reverse){ //move forward, if reverse move backward
+    int power[] = {LOW, HIGH};
+    stop_motors();
+    int speed = 200; //0 <= speed <= 255
+    
+    // rotate left side counter in reverser
+    digitalWrite(lfWheel, power[int(reverse)]); // Turn HIGH motor A //low - for forward
+    digitalWrite(lbWheel, power[int(!reverse)]); //high 
+    analogWrite(ENA, speed); // give power to left motors
+
+    digitalWrite(rfWheel, power[int(!reverse)]); // turn HIGH motor B //high
+    digitalWrite(rbWheel, power[int(reverse)]);  //low
+    analogWrite(ENB, speed); //give power to right motors
 }
 
 
