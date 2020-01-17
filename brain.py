@@ -4,13 +4,20 @@ import serial
 import time
 import json, os
 
+ACTION_SPACE = {
+	'MOVE_FORWARD' : 0, 
+	'MOVE_BACK' : 1,
+	'MOVE_RIGHT' : 2,
+	'MOVE_LEFT' : 3,
+}
+
 #state class containing active arduinos and active running component
 class StateManager():
 
   def __init__(self):
-    self.nodes = {}
-    self.active = 'pi'
-    self.added_devices = {}
+    self.nodes = {}			#an arduino
+    self.active = 'pi'		#
+    self.added_devices = {} #
   
   def add_node(self, arduino, device_name, baudrate=9600):
     _id = self.getId(arduino) #may throw error
@@ -24,12 +31,19 @@ class StateManager():
 
   def getId(self, arduino):
     '''gets message from arduino serial.Serial() input stream. interprets the message as an _id'''
+    print("Attempting to read line")
     read_serial=arduino.readline()
+    print("read serial",read_serial)
     _id = read_serial.decode('utf-8') #returns initial message from arduino
     return _id
   
   def __str__(self):
-    return self.added_devices
+    return str(self.added_devices)
+
+#encodes a character into a byte
+#core = instance of the state
+#dev_id = device we are sending data to 
+#data = a string we want to send
 
 def sendData(core, dev_id, data):
     msg = str(data)
@@ -37,6 +51,7 @@ def sendData(core, dev_id, data):
     core.nodes[dev_id].write(msg.encode('utf-8'))
     # time.sleep(1)
     
+#recieves data
 def receiveData(core, dev_id):
     print('Listening to ' + dev_id + '...')
     read_serial=core.nodes[dev_id].readline()
@@ -47,21 +62,29 @@ def receiveData(core, dev_id):
           core.val = 'pi' #set pi as active
     # time.sleep(1)
 
+#start of program
 if __name__ == '__main__': 
   '''logic for rasbpi goes here'''
   #Initialize State
   core = StateManager()
   num_devices = 1
+  
+  path = "/dev/"
+  devices = ['ttyACM0', 'ttyACM1'] #potential device names
+
+  if os.name == "nt":	#If os is windows path is empty
+	  path = "" 
+	  devices = ["COM3","COM4"] 
 
   #initialize Serial Information//Attach Arduinos
-  devices = ['ttyACM0', 'ttyACM1'] #potential device names
+  
   while len(core.added_devices) < num_devices: #until all devices are loaded
     time.sleep(.25)
     for device_name in devices:
       if device_name not in core.added_devices.values():
         print('Attemping to connect to ' + device_name + '...')
         try:
-          arduino = serial.Serial('/dev/' + device_name,9600) #ls /dev/tty*
+          arduino = serial.Serial(path + device_name,9600) #ls /dev/tty*
           print('Connected!')
           _id = core.add_node(arduino, device_name)
           sendData(core, _id, 0) #job completed without error
@@ -69,3 +92,11 @@ if __name__ == '__main__':
           print('Error occured', e)
   
   print('Resulting State:', core)
+
+
+def movement():
+	pass
+
+
+def IMU():
+	pass
