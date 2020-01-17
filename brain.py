@@ -4,11 +4,16 @@ import serial
 import time
 import json, os
 
+OS="linux"
+if os.name == "nt":
+  OS = 'windows'
+
 ACTION_SPACE = {
-	'MOVE_FORWARD' : 0, 
-	'MOVE_BACK' : 1,
-	'MOVE_RIGHT' : 2,
-	'MOVE_LEFT' : 3,
+	'STOP' : 0,
+	'MOVE_FORWARD' : 1, 
+	'MOVE_BACKWARD' : 2,
+	'TURN_RIGHT' : 3,
+	'TURN_LEFT' : 4,
 }
 
 #state class containing active arduinos and active running component
@@ -25,7 +30,7 @@ class StateManager():
     
     #add new node
     arduino.baudrate=baudrate
-    newNode = {_id:arduino}
+    newNode = {str(_id):arduino}
     self.nodes.update(newNode)
     return _id
 
@@ -35,6 +40,13 @@ class StateManager():
     read_serial=arduino.readline()
     print("read serial",read_serial)
     _id = read_serial.decode('utf-8') #returns initial message from arduino
+
+    if OS == "windows":
+      _id = _id[:-2]
+    else:
+      _id = _id[:-1]
+
+    print(_id, type(_id))
     return _id
   
   def __str__(self):
@@ -57,10 +69,37 @@ def receiveData(core, dev_id):
     read_serial=core.nodes[dev_id].readline()
     if(read_serial):
         msg = read_serial.decode('utf-8')
+
+        if OS == "windows":
+          _id = _id[:-2]
+        else:
+          _id = _id[:-1]
+
+
         print('Received:', msg) #decode data and print
         if msg == '-1': #job done
           core.val = 'pi' #set pi as active
     # time.sleep(1)
+
+def movement():
+	actions = {
+		ACTION_SPACE['MOVE_FORWARD'],
+		ACTION_SPACE['STOP'],
+		ACTION_SPACE['MOVE_BACKWARD'],
+		ACTION_SPACE['STOP'],
+		ACTION_SPACE['TURN_LEFT'],
+		ACTION_SPACE['STOP'],
+		ACTION_SPACE['TURN_RIGHT'],
+		ACTION_SPACE['STOP'],
+	}
+
+	for action in actions: 
+		sendData(core,'0',action)
+		time.sleep(1)
+	print("movemnt complete")
+
+def IMU():
+	pass
 
 #start of program
 if __name__ == '__main__': 
@@ -92,11 +131,7 @@ if __name__ == '__main__':
           print('Error occured', e)
   
   print('Resulting State:', core)
+  print('Nodes', core.nodes)
+  movement()
 
 
-def movement():
-	pass
-
-
-def IMU():
-	pass
