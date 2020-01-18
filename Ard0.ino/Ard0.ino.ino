@@ -35,3 +35,23 @@ void sendData(int val){
   Serial.println(val);
   String root = "pi";//sets pi to active
 }
+
+void runCommand(int action){
+  switch(action){
+    case 0:
+      stopMotors();
+      break;
+    case 1:
+      linear(true);
+      break;
+    case 2:
+      linear(false);
+      break;
+    case 3:
+      rotate(true);
+      break;
+    case 4:
+      rotate(false);
+      break;  
+  }
+}
