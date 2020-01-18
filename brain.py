@@ -44,7 +44,7 @@ class StateManager():
     if OS == "windows":
       _id = _id[:-2]
     else:
-      _id = _id[:-1]
+      _id = _id[:-2]
 
     print(_id, type(_id))
     return _id
@@ -73,7 +73,7 @@ def receiveData(core, dev_id):
         if OS == "windows":
           _id = _id[:-2]
         else:
-          _id = _id[:-1]
+          _id = _id[:-2]
 
 
         print('Received:', msg) #decode data and print
@@ -82,7 +82,7 @@ def receiveData(core, dev_id):
     # time.sleep(1)
 
 def movement():
-	actions = {
+	actions = [
 		ACTION_SPACE['MOVE_FORWARD'],
 		ACTION_SPACE['STOP'],
 		ACTION_SPACE['MOVE_BACKWARD'],
@@ -91,11 +91,11 @@ def movement():
 		ACTION_SPACE['STOP'],
 		ACTION_SPACE['TURN_RIGHT'],
 		ACTION_SPACE['STOP'],
-	}
+	]
 
 	for action in actions: 
 		sendData(core,'0',action)
-		time.sleep(1)
+		time.sleep(3)
 	print("movemnt complete")
 
 def IMU():
