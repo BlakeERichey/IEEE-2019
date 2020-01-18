@@ -1,21 +1,17 @@
-int lfWheel = 1; //left front
-int lfWheelReverse = 2; 
-int rfWheel = 3; //right front
-int rfWheelReverse = 4;
-int rbWheel = 5; //right back
-int rbWheelReverse = 6;
-int lbWheel = 7; //left back
-int lbWheelReverse = 8;
+int lfWheel = 6; //left front
+int lfWheelReverse = 5; 
+int rfWheel = 4; // right front
+int rfWheelReverse = 3;
+int rbWheel = 11; //right back
+int rbWheelReverse = 12;
+int lbWheel = 9; //left back
+int lbWheelReverse = 10;
 
 
-int ENLF = 8;  //left linear movement
-int ENRF = 13;  //left linear movement
-int ENRB = 7; //right linear movement
-int ENLB = 2; //right linear movement
-
-
-
-
+int ENLF = 7;  //left linear movement
+int ENRF = 2;  //left linear movement
+int ENRB = 13; //right linear movement
+int ENLB = 8; //right linear movement
 
 void setup() 
 { 
@@ -25,7 +21,6 @@ void setup()
   pinMode(ENRB, OUTPUT);
   pinMode(ENLB, OUTPUT);
   
-
   //configure wheel motors- determine where the power is put 
   pinMode(lfWheel, OUTPUT);
   pinMode(lfWheelReverse, OUTPUT);
@@ -41,53 +36,66 @@ void setup()
 // Main fuction
 void loop() 
 {
-  linear(false);
-  delay(5000);
+  rotate(true);
+  delay(2000);
   stop_motors();
   delay(2000);
-  linear(true);
-  delay(5000);
+  rotate(false);
+  delay(2000);
   stop_motors();
   delay(2000);
 }
-
+  
 void linear(bool forward){
   //Initialize the power range
   int power[] = {LOW, HIGH};
   stop_motors();
   int speed = 200; //0 <= speed <= 255
-
-  // 
+  
+    
   digitalWrite(lfWheel, power[int(forward)]); //low - for forward
   digitalWrite(lbWheel, power[int(forward)]); //high for forward
   digitalWrite(rfWheel, power[int(forward)]); //low - for forward
   digitalWrite(rbWheel, power[int(forward)]); //high for forward
-  analogWrite(ENA, speed); // give power to left motors
-   
-    
   
+  digitalWrite(lfWheelReverse,power[int(!forward)]);
+  digitalWrite(lbWheelReverse,power[int(!forward)]);
+  digitalWrite(rfWheelReverse,power[int(!forward)]);
+  digitalWrite(rbWheelReverse,power[int(!forward)]);
+
+ // give power to left motor
+  analogWrite(ENLF, speed);
+  analogWrite(ENRF, speed);
+  analogWrite(ENRB, speed);
+  analogWrite(ENLB, speed);
+}
+
+void rotate(bool right){
+  //Initialize the power range
+  int power[] = {LOW, HIGH};
+  stop_motors();
+  int speed = 200; //0 <= speed <= 255
+
+  digitalWrite(lfWheel, power[int(right)]);
+  digitalWrite(lbWheel, power[int(right)]);
+  digitalWrite(rfWheel, power[int(!right)]);
+  digitalWrite(rbWheel, power[int(!right)]);
+
+  digitalWrite(lfWheelReverse,power[int(!right)]);
+  digitalWrite(lbWheelReverse,power[int(!right)]);
+  digitalWrite(rfWheelReverse,power[int(right)]);
+  digitalWrite(rbWheelReverse,power[int(right)]);
+
+  analogWrite(ENLF, speed);
+  analogWrite(ENRF, speed);
+  analogWrite(ENRB, speed);
+  analogWrite(ENLB, speed);
 }
 
 void stop_motors(){
   int speed = 0;
-  analogWrite(ENA, speed);
-  analogWrite(ENB, speed);
-}
-
-void linear(bool reverse){ //move forward, if reverse move backward
-    int power[] = {LOW, HIGH};
-    stop_motors();
-    int speed = 200; //0 <= speed <= 255
-
-
-    
-    // rotate left side
-    digitalWrite(lfWheel, power[int(reverse)]); //low - for forward
-    digitalWrite(lbWheel, power[int(!reverse)]); //high for forward
-    analogWrite(ENA, speed); // give power to left motors
-
-    //rotate right side
-    digitalWrite(rfWheel, power[int(!reverse)]); //high for forward
-    digitalWrite(rbWheel, power[int(reverse)]);  //low for forward
-    analogWrite(ENB, speed); //give power to right motors
+  analogWrite(ENLF, speed);
+  analogWrite(ENRF, speed);
+  analogWrite(ENRB, speed);
+  analogWrite(ENLB, speed);
 }
