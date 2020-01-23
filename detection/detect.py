@@ -15,7 +15,7 @@ def foreground_obstructed(img):
 
   #determine color threshold
   y, x, _ = img.shape
-  pixel = img[int(y//2), 0] #take pixel halfway down y axis at x=0
+  pixel = img[y-1, int(x//2)] #take pixel halfway accross x axis at bottom of image
   src = np.expand_dims(np.array([pixel]), axis=0)
   foreground_color = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
 
@@ -37,7 +37,7 @@ def detection(img):
     returns if an object was found and then returns the closest obj to the camera
   '''
   e1 = cv2.getTickCount()
-  img = cv2.resize(img, None, fx=.2, fy=.2, interpolation=cv2.INTER_AREA)
+  img = cv2.resize(img, None, fx=.1, fy=.1, interpolation=cv2.INTER_AREA)
   obj_in_fg = foreground_obstructed(img)
   
   objs = [] #cropped images of objs
@@ -58,7 +58,7 @@ def detection(img):
         #INSERT LOGIC TO REMOVE PRIMARY PARENT HERE
         objs.append(img[y:y+h, x:x+w])
         coords.append((len(coords),x,y,w,h))
-    coords = sorted(coords, key=lambda x: x[1]) #sort by x location (closest box to left is closest obj)
+    coords = sorted(coords, key=lambda x: x[2]+x[4], reverse=True) #sort by y location (closest box to bottom is closest obj)
   
   res = None
   if len(objs) > 1:
@@ -68,7 +68,7 @@ def detection(img):
   time = (e2 - e1)/ cv2.getTickFrequency()
   print("Time taken:", time)
   
-  if res is not None:
+  if obj_in_fg:
     cv2.imshow("Image", img)
     cv2.imshow("Edges", edges)
     cv2.waitKey(0)
@@ -89,7 +89,7 @@ def detection(img):
 #   else:
 #     print('No object found')
 
-img = cv2.imread('nacho.jpg', cv2.IMREAD_COLOR)
+img = cv2.imread('coke.jpg', cv2.IMREAD_COLOR)
 obj_found, obj = detection(img)
 if obj_found:
   cv2.imshow("Object", obj)
