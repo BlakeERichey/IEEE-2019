@@ -37,7 +37,7 @@ void sendData(int val){
 }
 
 void runCommand(int action){
-  switch(action){
+  switch(action%48){
     case 0:
       stopMotors();
       break;
