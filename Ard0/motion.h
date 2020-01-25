@@ -1,11 +1,11 @@
-#define lfWheel 6 //left front
-#define lfWheelReverse 5 
+#define lfWheel 9 //left front
+#define lfWheelReverse 10 
 #define rfWheel 4 // right front
 #define rfWheelReverse 3
-#define rbWheel 11 //right back
-#define rbWheelReverse 12
-#define lbWheel 9 //left back
-#define lbWheelReverse 10
+#define rbWheel 5 //right back
+#define rbWheelReverse 6
+#define lbWheel 12 //left back
+#define lbWheelReverse 11
 
 
 #define ENLF 7  //left linear movement

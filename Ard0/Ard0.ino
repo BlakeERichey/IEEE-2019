@@ -1,4 +1,7 @@
-#include "lcd.h"
+#if ARDUINO >= 100
+#include "Arduino.h"
+#endif
+//+#include "lcd.h"
 #include "motion.h"
 
 const int NAME = 0;
@@ -34,9 +37,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.println(active);
   if(active == "pi"){
     sendData(NAME);
+    delay(100);
     recieveData();
   }else{
     recieveData();

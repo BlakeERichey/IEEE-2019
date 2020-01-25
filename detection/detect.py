@@ -33,10 +33,10 @@ def foreground_obstructed(img):
   for i, c in enumerate(contours):
     x,y,w,h = cv2.boundingRect(c) #get bounding box
     segmented = cv2.rectangle(segmented,(x,y),(x+w,y+h),(255,255,255),2)
-  cv2.imshow("Segmented", segmented)
-  cv2.imshow("Seg Edge", edges)
-  cv2.waitKey(0)
-  cv2.destroyAllWindows()
+  # cv2.imshow("Segmented", segmented)
+  # cv2.imshow("Seg Edge", edges)
+  # cv2.waitKey(0)
+  # cv2.destroyAllWindows()
   return (False, len(contours) > 1)[contours is not None]
 
 def detection(img):
@@ -76,11 +76,11 @@ def detection(img):
   time = (e2 - e1)/ cv2.getTickFrequency()
   print("Time taken:", time)
   
-  if obj_in_fg:
-    cv2.imshow("Image", img)
-    cv2.imshow("Edges", edges)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+  # if obj_in_fg:
+  #   cv2.imshow("Image", img)
+  #   cv2.imshow("Edges", edges)
+  #   cv2.waitKey(0)
+  #   cv2.destroyAllWindows()
   return res is not None, res
 
 # path = './images/coke/'
@@ -96,13 +96,12 @@ def detection(img):
 #     cv2.destroyAllWindows()
 #   else:
 #     print('No object found')
-
-img = cv2.imread('corner4.jpg', cv2.IMREAD_COLOR)
-obj_found, obj = detection(img)
-if obj_found:
-  cv2.imshow("Object", obj)
-  cv2.waitKey(0)
-  cv2.destroyAllWindows()
-else:
-  print('No object found')
+# img = cv2.imread('coke.jpg', cv2.IMREAD_COLOR)
+# obj_found, obj = detection(img)
+# if obj_found:
+#   cv2.imshow("Object", obj)
+#   cv2.waitKey(0)
+#   cv2.destroyAllWindows()
+# else:
+#   print('No object found')
 

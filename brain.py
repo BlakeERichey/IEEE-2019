@@ -151,16 +151,26 @@ if __name__ == '__main__':
   print('Resulting State:', core)
   print('Nodes', core.nodes)
   
+  time.sleep(2)
+  # movement()
   while True: #primary loop
 
     #rotate until object found
     img = take_image()
+    h, w, _ = img.shape
+    scale = 1
+    angle = 180
+    center = (w/2,h/2)
+    M = cv2.getRotationMatrix2D(center, angle, scale)
+    img = cv2.warpAffine(img, M, (w, h))
+    # print('Image shape:', img.shape)
     if img is not None:
+      # cv2.imshow('Image', img)
+      # cv2.waitKey(0)
+      # cv2.destroyAllWindows()
       obj_detected, obj_img = detect.detection(img)
       if not obj_detected:
         send_act(core, 'TURN_RIGHT')
       else:
         send_act(core, 'STOP')
         break
-
-
