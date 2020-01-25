@@ -2,7 +2,8 @@
 #manages localstate for pi
 import serial
 import time
-import json, os
+import json, os, cv2
+from detection import detect
 
 OS="linux"
 if os.name == "nt":
@@ -57,14 +58,14 @@ class StateManager():
 #dev_id = device we are sending data to 
 #data = a string we want to send
 
-def sendData(core, dev_id, data):
+def send_data(core, dev_id, data):
     msg = str(data)
     print('Sending:', msg)
     core.nodes[dev_id].write(msg.encode('utf-8'))
     # time.sleep(1)
     
 #recieves data
-def receiveData(core, dev_id):
+def receive_data(core, dev_id):
     print('Listening to ' + dev_id + '...')
     read_serial=core.nodes[dev_id].readline()
     if(read_serial):
@@ -94,12 +95,29 @@ def movement():
 	]
 
 	for action in actions: 
-		sendData(core,'0',action)
+		send_data(core,'0',action)
 		time.sleep(3)
 	print("movemnt complete")
 
 def IMU():
 	pass
+
+def send_act(core, string):
+  if string in ACTION_SPACE.keys():
+    action = ACTION_SPACE[string]
+    send_data(core, '0', action)
+
+def take_image():
+  '''returns image from pi-camera'''
+  # initialize the camera
+  cam = cv2.VideoCapture(0)   # 0 -> index of camera
+  s, img = cam.read()
+  if s:    # frame captured without any errors
+    return img
+    # namedWindow("cam-test",CV_WINDOW_AUTOSIZE)
+    # imshow("cam-test",img)
+    # waitKey(0)
+    # destroyWindow("cam-test")
 
 #start of program
 if __name__ == '__main__': 
@@ -126,12 +144,23 @@ if __name__ == '__main__':
           arduino = serial.Serial(path + device_name,9600) #ls /dev/tty*
           print('Connected!')
           _id = core.add_node(arduino, device_name)
-          sendData(core, _id, 0) #job completed without error
+          send_data(core, _id, 0) #job completed without error
         except Exception as e:
           print('Error occured', e)
   
   print('Resulting State:', core)
   print('Nodes', core.nodes)
-  movement()
+  
+  while True: #primary loop
+
+    #rotate until object found
+    img = take_image()
+    if img is not None:
+      obj_detected, obj_img = detect.detection(img)
+      if not obj_detected:
+        send_act(core, 'TURN_RIGHT')
+      else:
+        send_act(core, 'STOP')
+        break
 
 

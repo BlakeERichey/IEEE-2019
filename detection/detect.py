@@ -30,6 +30,13 @@ def foreground_obstructed(img):
   edges = cv2.Canny(mask, 150, 250)
   contours, hierarchy = cv2.findContours(edges.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
+  for i, c in enumerate(contours):
+    x,y,w,h = cv2.boundingRect(c) #get bounding box
+    segmented = cv2.rectangle(segmented,(x,y),(x+w,y+h),(255,255,255),2)
+  cv2.imshow("Segmented", segmented)
+  cv2.imshow("Seg Edge", edges)
+  cv2.waitKey(0)
+  cv2.destroyAllWindows()
   return (False, len(contours) > 1)[contours is not None]
 
 def detection(img):
@@ -37,11 +44,12 @@ def detection(img):
     returns if an object was found and then returns the closest obj to the camera
   '''
   e1 = cv2.getTickCount()
-  img = cv2.resize(img, None, fx=.1, fy=.1, interpolation=cv2.INTER_AREA)
+  img = cv2.resize(img, None, fx=.05, fy=.05, interpolation=cv2.INTER_AREA)
   obj_in_fg = foreground_obstructed(img)
   
   objs = [] #cropped images of objs
   if obj_in_fg:
+    print('obj_in_fg')
     thresh = 0.03*img.size #minimum size for object to be detected
     blur = cv2.medianBlur(img, 3)
     edges = cv2.Canny(blur, 150, 200)
@@ -89,7 +97,7 @@ def detection(img):
 #   else:
 #     print('No object found')
 
-img = cv2.imread('coke.jpg', cv2.IMREAD_COLOR)
+img = cv2.imread('corner4.jpg', cv2.IMREAD_COLOR)
 obj_found, obj = detection(img)
 if obj_found:
   cv2.imshow("Object", obj)

@@ -23,15 +23,6 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
 
-  rotate(true);
-  delay(2000);
-  stopMotors();
-  delay(2000);
-  rotate(false);
-  delay(2000);
-  stopMotors();
-  delay(2000);
-
   ////initialize lcd
   //  const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
   //  LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
@@ -43,9 +34,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  Serial.println(active);
   if(active == "pi"){
     sendData(NAME);
-    active = "ard";
+    recieveData();
   }else{
     recieveData();
   }
@@ -53,15 +45,14 @@ void loop() {
 
 void recieveData(){
   if (Serial.available() > 0){//is a char available?
+    active = "ard";                //sets ard to active
     char msg = Serial.read();      //get the character
-//    printLCD("value recieved",double(msg)/,true);
     runCommand(int(msg));
   }
 }
 
 void sendData(int val){
   Serial.println(val);
-  String root = "pi";//sets pi to active
 }
 
 void runCommand(int action){
