@@ -49,7 +49,7 @@ void rotate(bool right){
   //Initialize the power range
   int power[] = {LOW, HIGH};
   stopMotors();
-  int speed = 200; //0 <= speed <= 255
+  int speed = 150; //0 <= speed <= 255
 
   digitalWrite(lfWheel, power[int(right)]);
   digitalWrite(lbWheel, power[int(right)]);

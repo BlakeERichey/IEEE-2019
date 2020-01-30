@@ -153,26 +153,28 @@ if __name__ == '__main__':
   time.sleep(2)
   i = 0
   # movement()
-  while True: #primary loop
+  send_act(core, 'TURN_RIGHT')
+  # while True: #primary loop
 
-    #rotate until object found
-    img = take_image()
-    h, w, _ = img.shape
-    scale = 1
-    angle = 180
-    center = (w/2,h/2)
-    M = cv2.getRotationMatrix2D(center, angle, scale)
-    img = cv2.warpAffine(img, M, (w, h))
-    if img is not None:
-      # cv2.imshow('Image', img)
-      # cv2.waitKey(0)
-      # cv2.destroyAllWindows()
-      obj_detected, obj_img = detect.detection(img)
-      if obj_detected:
-        save_image('image'+str(i), img)
-        i+=1
-      # if not obj_detected:
-      #   send_act(core, 'TURN_RIGHT')
-      # else:
-      #   send_act(core, 'STOP')
-      #   break
+  #   #rotate until object found
+  #   img = take_image()
+  #   h, w, _ = img.shape
+  #   scale = 1
+  #   angle = 180
+  #   center = (w/2,h/2)
+  #   M = cv2.getRotationMatrix2D(center, angle, scale)
+  #   img = cv2.warpAffine(img, M, (w, h))
+  #   if img is not None:
+  #     # cv2.imshow('Image', img)
+  #     # cv2.waitKey(0)
+  #     # cv2.destroyAllWindows()
+  #     obj_detected, obj_img = detect.detection(img)
+  #     if obj_detected:
+  #       pass
+  #   # save_image('images/image'+str(i)+'.jpg', img)
+  #   # i+=1
+  #     # if not obj_detected:
+  #     #   send_act(core, 'TURN_RIGHT')
+  #     # else:
+  #     #   send_act(core, 'STOP')
+  #     #   break
