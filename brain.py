@@ -152,8 +152,8 @@ if __name__ == '__main__':
   
   time.sleep(2)
   i = 0
-  # movement()
-  send_act(core, 'TURN_RIGHT')
+  movement()
+  # send_act(core, 'TURN_RIGHT')
   # while True: #primary loop
 
   #   #rotate until object found
