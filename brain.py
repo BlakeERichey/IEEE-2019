@@ -114,10 +114,9 @@ def take_image():
   s, img = cam.read()
   if s:    # frame captured without any errors
     return img
-    # namedWindow("cam-test",CV_WINDOW_AUTOSIZE)
-    # imshow("cam-test",img)
-    # waitKey(0)
-    # destroyWindow("cam-test")
+
+def save_image(filename, img):
+  cv2.imwrite(filename, img)
 
 #start of program
 if __name__ == '__main__': 
@@ -152,6 +151,7 @@ if __name__ == '__main__':
   print('Nodes', core.nodes)
   
   time.sleep(2)
+  i = 0
   # movement()
   while True: #primary loop
 
@@ -163,14 +163,16 @@ if __name__ == '__main__':
     center = (w/2,h/2)
     M = cv2.getRotationMatrix2D(center, angle, scale)
     img = cv2.warpAffine(img, M, (w, h))
-    # print('Image shape:', img.shape)
     if img is not None:
       # cv2.imshow('Image', img)
       # cv2.waitKey(0)
       # cv2.destroyAllWindows()
       obj_detected, obj_img = detect.detection(img)
-      if not obj_detected:
-        send_act(core, 'TURN_RIGHT')
-      else:
-        send_act(core, 'STOP')
-        break
+      if obj_detected:
+        save_image('image'+str(i), img)
+        i+=1
+      # if not obj_detected:
+      #   send_act(core, 'TURN_RIGHT')
+      # else:
+      #   send_act(core, 'STOP')
+      #   break
