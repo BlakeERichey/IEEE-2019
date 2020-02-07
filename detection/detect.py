@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import skimage.segmentation as seg
 import skimage.color as color
 
-def foreground_obstructed(img):
+def foreground_obstructed(img, display = False):
   '''
     segments image and determines if the foreground is broken up by an object.
   '''
@@ -30,22 +30,23 @@ def foreground_obstructed(img):
   edges = cv2.Canny(mask, 150, 250)
   contours, hierarchy = cv2.findContours(edges.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
-  for i, c in enumerate(contours):
-    x,y,w,h = cv2.boundingRect(c) #get bounding box
-    segmented = cv2.rectangle(segmented,(x,y),(x+w,y+h),(255,255,255),2)
-  # cv2.imshow("Segmented", segmented)
-  # cv2.imshow("Seg Edge", edges)
-  # cv2.waitKey(0)
-  # cv2.destroyAllWindows()
+  if display:
+    for i, c in enumerate(contours):
+      x,y,w,h = cv2.boundingRect(c) #get bounding box
+      segmented = cv2.rectangle(segmented,(x,y),(x+w,y+h),(255,255,255),2)
+    cv2.imshow("Segmented", segmented)
+    cv2.imshow("Seg Edge", edges)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
   return (False, len(contours) > 1)[contours is not None]
 
-def detection(img):
+def detection(img, display = False):
   '''
     returns if an object was found and then returns the closest obj to the camera
   '''
   e1 = cv2.getTickCount()
-  img = cv2.resize(img, None, fx=.05, fy=.05, interpolation=cv2.INTER_AREA)
-  obj_in_fg = foreground_obstructed(img)
+  img = cv2.resize(img, None, fx=.1, fy=.1, interpolation=cv2.INTER_AREA)
+  obj_in_fg = foreground_obstructed(img, display)
   
   objs = [] #cropped images of objs
   if obj_in_fg:
@@ -63,6 +64,7 @@ def detection(img):
       x,y,w,h = cv2.boundingRect(c) #get bounding box
       if w*h >= thresh: #if bounding box big enough
         parent = hierarchy[0][i][3]
+        print('Object found')
         #INSERT LOGIC TO REMOVE PRIMARY PARENT HERE
         objs.append(img[y:y+h, x:x+w])
         coords.append((len(coords),x,y,w,h))
@@ -70,38 +72,15 @@ def detection(img):
   
   res = None
   if len(objs) > 1:
-    res = objs[coords[1][0]] #ignore primary parent, so coords[1]. [0] gets index number
+    res = objs[coords[0][0]] #ignore primary parent, so coords[1]. [0] gets index number
 
   e2 = cv2.getTickCount()
   time = (e2 - e1)/ cv2.getTickFrequency()
   print("Time taken:", time)
   
-  # if obj_in_fg:
-  #   cv2.imshow("Image", img)
-  #   cv2.imshow("Edges", edges)
-  #   cv2.waitKey(0)
-  #   cv2.destroyAllWindows()
+  if display:
+    cv2.imshow("Image", img)
+    cv2.imshow("Edges", edges)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
   return res is not None, res
-
-# path = './images/coke/'
-# cokes = [name for name in os.listdir('./images/coke/')]
-
-# for i in range(100):
-#   print('Loading:', path+cokes[i])
-#   img = cv2.imread(path+cokes[i], cv2.IMREAD_COLOR)
-#   obj_found, obj = detection(img)
-#   if obj_found:
-#     cv2.imshow("Object", obj)
-#     cv2.waitKey(0)
-#     cv2.destroyAllWindows()
-#   else:
-#     print('No object found')
-# img = cv2.imread('coke.jpg', cv2.IMREAD_COLOR)
-# obj_found, obj = detection(img)
-# if obj_found:
-#   cv2.imshow("Object", obj)
-#   cv2.waitKey(0)
-#   cv2.destroyAllWindows()
-# else:
-#   print('No object found')
-
