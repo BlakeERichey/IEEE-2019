@@ -113,7 +113,14 @@ def take_image():
   cam = cv2.VideoCapture(0)   # 0 -> index of camera
   s, img = cam.read()
   if s:    # frame captured without any errors
-    return img
+    #rotate img
+    h, w, _ = img.shape
+    scale = 1
+    angle = 180
+    center = (w/2,h/2)
+    M = cv2.getRotationMatrix2D(center, angle, scale)
+    img = cv2.warpAffine(img, M, (w, h))
+    return img[:, 170:480]
 
 def save_image(filename, img):
   cv2.imwrite(filename, img)
@@ -129,14 +136,6 @@ def collect_images(images):
       #rotate until object found
       img = take_image()
       if img is not None:
-        #rotate image
-        h, w, _ = img.shape
-        scale = 1
-        angle = 180
-        center = (w/2,h/2)
-        M = cv2.getRotationMatrix2D(center, angle, scale)
-        img = cv2.warpAffine(img, M, (w, h))
-
         #find if object is detected
         obj_detected, obj_img = detect.detection(img)
         save_image('images/image'+str(i)+'.jpg', img)
@@ -180,7 +179,7 @@ if __name__ == '__main__':
   time.sleep(1)
   # i = 0
   # movement()
-  collect_images(100)
+  collect_images(1)
   # send_act(core, 'TURN_RIGHT')
   # while True: #primary loop
 
