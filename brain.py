@@ -85,13 +85,13 @@ def receive_data(core, dev_id):
 def movement():
 	actions = [
 		ACTION_SPACE['MOVE_FORWARD'],
-		ACTION_SPACE['STOP'],
-		ACTION_SPACE['MOVE_BACKWARD'],
-		ACTION_SPACE['STOP'],
-		ACTION_SPACE['TURN_LEFT'],
-		ACTION_SPACE['STOP'],
-		ACTION_SPACE['TURN_RIGHT'],
-		ACTION_SPACE['STOP'],
+		# ACTION_SPACE['STOP'],
+		# ACTION_SPACE['MOVE_BACKWARD'],
+		# ACTION_SPACE['STOP'],
+		# ACTION_SPACE['TURN_LEFT'],
+		# ACTION_SPACE['STOP'],
+		# ACTION_SPACE['TURN_RIGHT'],
+		# ACTION_SPACE['STOP'],
 	]
 
 	for action in actions: 
@@ -117,6 +117,33 @@ def take_image():
 
 def save_image(filename, img):
   cv2.imwrite(filename, img)
+
+def collect_images(images):
+  for i in range(images):
+    while True: #primary loop
+      send_act(core, 'TURN_RIGHT')
+      time.sleep(.1)
+      send_act(core, 'STOP')
+      time.sleep(.1)
+
+      #rotate until object found
+      img = take_image()
+      if img is not None:
+        #rotate image
+        h, w, _ = img.shape
+        scale = 1
+        angle = 180
+        center = (w/2,h/2)
+        M = cv2.getRotationMatrix2D(center, angle, scale)
+        img = cv2.warpAffine(img, M, (w, h))
+
+        #find if object is detected
+        obj_detected, obj_img = detect.detection(img)
+        save_image('images/image'+str(i)+'.jpg', img)
+        if obj_detected:
+          save_image('images/detected'+str(i)+'.jpg', obj_img)
+        i+=1
+        time.sleep(.1)
 
 #start of program
 if __name__ == '__main__': 
@@ -150,9 +177,10 @@ if __name__ == '__main__':
   print('Resulting State:', core)
   print('Nodes', core.nodes)
   
-  time.sleep(2)
-  i = 0
-  movement()
+  time.sleep(1)
+  # i = 0
+  # movement()
+  collect_images(100)
   # send_act(core, 'TURN_RIGHT')
   # while True: #primary loop
 
