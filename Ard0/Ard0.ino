@@ -2,10 +2,16 @@
 #include "Arduino.h"
 #endif
 //+#include "lcd.h"
+#include <Servo.h>
+#include "pickup.h"
 #include "motion.h"
 
 const int NAME = 0;
 String active = "pi";
+
+//servo pins
+const int clawPin = 14;
+const int flippers = 1;
 
 void setup() {
   // Used to power the sides of the robot
@@ -23,7 +29,11 @@ void setup() {
   pinMode(rbWheelReverse, OUTPUT);
   pinMode(lbWheel, OUTPUT);
   pinMode(lbWheelReverse, OUTPUT);
-  // put your setup code here, to run once:
+  
+  //Set up servos
+  Claw.attach(clawPin);
+  Flipper.attach(flippers);
+
   Serial.begin(9600);
 
   ////initialize lcd
@@ -74,6 +84,19 @@ void runCommand(int action){
       break;
     case 4:
       rotate(false); //rotate left
+      break;  
+    case 5: //CLOSE FLIPPERS
+      if(flippersOpen){
+        toggleFlippers();
+      }
+      break; 
+    case 6: //CLOSE CLAW
+      if(clawOpen){
+        toggleClaw();
+      }
+      break; 
+    case 7: //STORE
+      stopMotors();
       break;  
   }
 }

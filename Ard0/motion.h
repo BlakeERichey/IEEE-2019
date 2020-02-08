@@ -1,17 +1,17 @@
-#define lfWheel 9 //left front
-#define lfWheelReverse 10 
-#define rfWheel 4 // right front
-#define rfWheelReverse 3
-#define rbWheel 5 //right back
-#define rbWheelReverse 6
-#define lbWheel 12 //left back
-#define lbWheelReverse 11
+#define lfWheel 3 //left front
+#define lfWheelReverse 4
+#define lbWheel 6 //left back
+#define lbWheelReverse 5
+#define rfWheel 10 // right front
+#define rfWheelReverse 9
+#define rbWheel 11 //right back
+#define rbWheelReverse 12
 
 
-#define ENLF 7  //left linear movement
-#define ENRF 2  //left linear movement
+#define ENLF 2  //left linear movement
+#define ENLB 7 //right linear movement
+#define ENRF 8  //left linear movement
 #define ENRB 13 //right linear movement
-#define ENLB 8 //right linear movement
 
 void stopMotors(){
   int speed = 0;

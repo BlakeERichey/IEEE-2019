@@ -15,6 +15,9 @@ ACTION_SPACE = {
 	'MOVE_BACKWARD' : 2,
 	'TURN_RIGHT' : 3,
 	'TURN_LEFT' : 4,
+  'CLOSE': 5, #Close flippers
+  'GRAB': 6, #Close Claw and Stop
+  'STORE': 7, #pick up and ...
 }
 
 #state class containing active arduinos and active running component
@@ -78,26 +81,25 @@ def receive_data(core, dev_id):
 
 
         print('Received:', msg) #decode data and print
-        if msg == '-1': #job done
-          core.val = 'pi' #set pi as active
+        return msg
     # time.sleep(1)
 
 def movement():
 	actions = [
 		ACTION_SPACE['MOVE_FORWARD'],
-		# ACTION_SPACE['STOP'],
-		# ACTION_SPACE['MOVE_BACKWARD'],
-		# ACTION_SPACE['STOP'],
-		# ACTION_SPACE['TURN_LEFT'],
-		# ACTION_SPACE['STOP'],
-		# ACTION_SPACE['TURN_RIGHT'],
-		# ACTION_SPACE['STOP'],
+		ACTION_SPACE['STOP'],
+		ACTION_SPACE['MOVE_BACKWARD'],
+		ACTION_SPACE['STOP'],
+		ACTION_SPACE['TURN_LEFT'],
+		ACTION_SPACE['STOP'],
+		ACTION_SPACE['TURN_RIGHT'],
+		ACTION_SPACE['STOP'],
 	]
 
 	for action in actions: 
 		send_data(core,'0',action)
 		time.sleep(3)
-	print("movemnt complete")
+	print("movement complete")
 
 def IMU():
 	pass
@@ -129,9 +131,9 @@ def collect_images(images):
   for i in range(images):
     while True: #primary loop
       send_act(core, 'TURN_RIGHT')
-      time.sleep(.1)
+      time.sleep(.4)
       send_act(core, 'STOP')
-      time.sleep(.1)
+      time.sleep(.01)
 
       #rotate until object found
       img = take_image()
@@ -142,7 +144,23 @@ def collect_images(images):
         if obj_detected:
           save_image('images/detected'+str(i)+'.jpg', obj_img)
         i+=1
-        time.sleep(.1)
+        time.sleep(.01)
+
+def find_obj(core):
+  obj_detected = False
+  while not obj_detected: 
+    send_act(core, 'TURN_RIGHT')
+    time.sleep(.4)
+    send_act(core, 'STOP')
+    time.sleep(.01)
+
+    #rotate until object found
+    img = take_image()
+    if img is not None:
+      #find if object is detected
+      obj_detected, obj_img = detect.detection(img)
+  
+  return obj_img
 
 #start of program
 if __name__ == '__main__': 
@@ -152,7 +170,7 @@ if __name__ == '__main__':
   num_devices = 1
   
   path = "/dev/"
-  devices = ['ttyACM0', 'ttyACM1'] #potential device names
+  devices = ['ttyACM0', 'ttyACM1', 'ttyACM2'] #potential device names
 
   if os.name == "nt":	#If os is windows path is empty
 	  path = "" 
@@ -179,29 +197,24 @@ if __name__ == '__main__':
   time.sleep(1)
   # i = 0
   # movement()
-  collect_images(1)
+  # collect_images(1)
   # send_act(core, 'TURN_RIGHT')
-  # while True: #primary loop
+  # while True:
+  obj_img = find_obj(core)
+  send_act(core, 'MOVE_FORWARD')
+  time.sleep(1.5)
+  send_act(core, 'STOP')
+  #classify img
 
-  #   #rotate until object found
-  #   img = take_image()
-  #   h, w, _ = img.shape
-  #   scale = 1
-  #   angle = 180
-  #   center = (w/2,h/2)
-  #   M = cv2.getRotationMatrix2D(center, angle, scale)
-  #   img = cv2.warpAffine(img, M, (w, h))
-  #   if img is not None:
-  #     # cv2.imshow('Image', img)
-  #     # cv2.waitKey(0)
-  #     # cv2.destroyAllWindows()
-  #     obj_detected, obj_img = detect.detection(img)
-  #     if obj_detected:
-  #       pass
-  #   # save_image('images/image'+str(i)+'.jpg', img)
-  #   # i+=1
-  #     # if not obj_detected:
-  #     #   send_act(core, 'TURN_RIGHT')
-  #     # else:
-  #     #   send_act(core, 'STOP')
-  #     #   break
+  # send_act(core, 'IN_RANGE')
+  # msg = None
+  # while msg not in ['0', '1']:
+  #   msg = receive_data(core, '0')
+  
+  # if msg == '1':
+  #   send_act(core, 'PICK_UP')
+  #   res = None
+  #   while res not in ['0', '1']:
+  #     res = receive_data(core, '0')
+  # elif msg == '0':
+  #   send_act(core, 'STOP')
