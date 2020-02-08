@@ -16,7 +16,7 @@ ACTION_SPACE = {
 	'TURN_RIGHT' : 3,
 	'TURN_LEFT' : 4,
   'CLOSE': 5, #Close flippers
-  'GRAB': 6, #Close Claw and Stop
+  'GRAB': 6, #Close Claw
   'STORE': 7, #pick up and ...
 }
 
@@ -29,7 +29,9 @@ class StateManager():
     self.added_devices = {} #
   
   def add_node(self, arduino, device_name, baudrate=9600):
-    _id = self.getId(arduino) #may throw error
+    _id = None
+    while _id not in ['0', '1']:
+      _id = self.getId(arduino) #may throw error
     self.added_devices.update({_id:device_name})
     
     #add new node
@@ -167,7 +169,7 @@ if __name__ == '__main__':
   '''logic for rasbpi goes here'''
   #Initialize State
   core = StateManager()
-  num_devices = 1
+  num_devices = 2
   
   path = "/dev/"
   devices = ['ttyACM0', 'ttyACM1', 'ttyACM2'] #potential device names
@@ -200,10 +202,10 @@ if __name__ == '__main__':
   # collect_images(1)
   # send_act(core, 'TURN_RIGHT')
   # while True:
-  obj_img = find_obj(core)
-  send_act(core, 'MOVE_FORWARD')
-  time.sleep(1.5)
-  send_act(core, 'STOP')
+  # obj_img = find_obj(core)
+  send_data(core, '1', 6) #job completed without error
+  # time.sleep(1.5)
+  # send_act(core, 'STOP')
   #classify img
 
   # send_act(core, 'IN_RANGE')
