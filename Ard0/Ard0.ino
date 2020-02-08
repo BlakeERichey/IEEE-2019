@@ -6,7 +6,7 @@
 #include "pickup.h"
 #include "motion.h"
 
-const int NAME = 0;
+const int NAME = 1;
 String active = "pi";
 
 void setup() {

@@ -1,8 +1,8 @@
 #include <Servo.h>
 //Servo pins
 #define clawPin 7
-#define lFlipper 10;
-#define rFlipper 11;
+#define lFlipper 10
+#define rFlipper 11
 
 //variables
 bool clawOpen = true;
@@ -35,17 +35,17 @@ void toggleFlippers(){
   int opened = 100;  //flipper is open at this angle
   int closed = 50; //flipper is closed at this angle
 
-  if (flippersOpen) { //close
-    for (int pos = opened; pos >= closed; pos -= 5) {
+  if (flippersOpen) { //Close
+    for (int pos = opened; pos >= closed; pos -= 1) {
       FlipperLeft.write(pos);
       FlipperRight.write(opened+(opened-pos));
-      delay(100);
+      delay(40);
     }
-  }else{ //open
-    for (int pos = closed; pos <= opened; pos += 5) {
+  }else{ //Open
+    for (int pos = closed; pos <= opened; pos += 1) {
       FlipperLeft.write(pos);
       FlipperRight.write(opened+closed-(pos-closed));
-      delay(100);
+      delay(20);
     } 
   }
   flippersOpen = !flippersOpen;

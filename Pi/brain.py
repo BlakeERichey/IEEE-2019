@@ -28,7 +28,7 @@ if __name__ == '__main__':
   #========== Connect Arduinos ============================== 
   #Initialize State
   core = StateManager()
-  num_devices = 2
+  num_devices = 1
   
   path = "/dev/"
   devices = ['ttyACM0', 'ttyACM1', 'ttyACM2'] #potential device names
