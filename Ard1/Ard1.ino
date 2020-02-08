@@ -2,6 +2,7 @@
 #include "Arduino.h"
 #endif
 #include <Servo.h>
+#include "Adafruit_VL6180X.h"
 
 const int NAME = 1;
 String active = "pi";
@@ -13,8 +14,11 @@ const int flippers = 2;
 //variables
 bool clawOpen = true;
 bool flippersOpen = true;
+
+//initialize components
 Servo Claw;
 Servo Flipper;
+Adafruit_VL6180X vl = Adafruit_VL6180X();
 void setup() {
   Claw.attach(clawPin);
   Flipper.attach(flippers);
@@ -36,7 +40,7 @@ void toggleClaw(){
   clawOpen = !clawOpen;
 }
 
-toggleFlippers(){
+void toggleFlippers(){
   if(flippersOpen){
     for(int i = 0; i<180; i+=5){
       Flipper.write(i+1);
@@ -46,4 +50,16 @@ toggleFlippers(){
     Flipper.write(0);
   }
   flippersOpen = !flippersOpen;
+}
+
+double getRange(){
+  double range = -1.0;
+  uint8_t status = vl.readRangeStatus();
+
+  if (status == VL6180X_ERROR_NONE) {
+    uint8_t range = vl.readRange();
+    Serial.print("Range: "); Serial.println(range);
+  }
+
+  return range;
 }
