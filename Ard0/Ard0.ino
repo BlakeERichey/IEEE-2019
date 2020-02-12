@@ -28,7 +28,8 @@ void setup() {
   
   //Set up servos
   Claw.attach(clawPin);
-  // Flipper.attach(flippers);
+  FlipperLeft.attach(lFlipper);
+  FlipperRight.attach(rFlipper);
 
   Serial.begin(9600);
 
@@ -83,7 +84,7 @@ void runCommand(int action){
       break;  
     case 5: //CLOSE FLIPPERS
       if(flippersOpen){
-//        toggleFlippers();
+        toggleFlippers();
       }
       break; 
     case 6: //CLOSE CLAW

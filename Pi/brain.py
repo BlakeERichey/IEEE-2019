@@ -56,4 +56,4 @@ if __name__ == '__main__':
   time.sleep(1)
   
   #========== Pathing ======================================== 
-  movement(core)
+  send_data(core, '1', 5) #close flippers
