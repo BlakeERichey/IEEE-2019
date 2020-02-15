@@ -50,6 +50,11 @@ def take_image():
 def save_image(filename, img):
   cv2.imwrite(filename, img)
 
+def load_image(filename, mode='color'):
+  
+  mode = ['gray','color'].index(mode)
+  return cv2.imread(filename, mode)
+
 def movement(core):
   '''
     Test all movement options for arduino

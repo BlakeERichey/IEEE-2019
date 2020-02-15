@@ -20,3 +20,11 @@ def find_obj(core):
       obj_detected, obj_img = detector(img)
   
   return obj_img
+
+def find_and_retrieve(core):
+  '''
+    Finds obj than goes to it and picks it up
+  '''
+
+  obj = find_obj(core)
+  pass
