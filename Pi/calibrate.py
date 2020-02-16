@@ -63,7 +63,7 @@ def get_thresh(string):
       lower, upper = np.array([0,0,235]), np.array([179,15,255])
   else:
     color = color_dict[string]
-    lower, upper = lower_upper(color, min_s=130)
+    lower, upper = lower_upper(color, min_s=10)
   
   # print('Color', string, 'lower', lower, 'Upper', upper)
   
@@ -139,6 +139,6 @@ def calibrate_distance(colors, img=None, scale=1, display=False):
 
 
 
-img = load_image('color.png')
-pixels = calibrate_distance(['pink', 'purple', 'white', 'black', 'green', 'red', 'blue', 'yellow'], img, .1)
+img = load_image('test.jpg')
+pixels = calibrate_distance(['red', 'yellow', 'purple', 'pink', 'green'], img, scale=.2, display=True)
 print(pixels)
