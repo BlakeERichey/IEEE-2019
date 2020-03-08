@@ -41,7 +41,7 @@ def take_image():
     #rotate img
     h, w, _ = img.shape
     scale = 1
-    angle = 180
+    angle = 90
     center = (w/2,h/2)
     M = cv2.getRotationMatrix2D(center, angle, scale)
     img = cv2.warpAffine(img, M, (w, h))

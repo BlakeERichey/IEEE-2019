@@ -50,7 +50,7 @@ def get_thresh(string):
     'yellow': np.array([35,  150, 100]), 
     'purple': np.array([150, 150, 100]),
     'blue':   np.array([120, 150, 100]), 
-    'green':   np.array([60, 150, 100]), 
+    'green':  np.array([60,  150, 100]), 
   }
 
   if string in ['pink']:
@@ -58,7 +58,7 @@ def get_thresh(string):
     lower, upper = lower_upper(color, 10, 15, 230, 125, 255)
   elif string in ['black', 'white']:
     if string == 'black':
-      lower, upper = np.array([0,0,0]), np.array([179,255,30])
+      lower, upper = np.array([0,0,0]), np.array([179,255,100])
     else:
       lower, upper = np.array([0,0,235]), np.array([179,15,255])
   else:
@@ -78,6 +78,7 @@ def get_mask(hsv, string):
   '''
   color = string.lower()
   lower, upper = get_thresh(color)
+  print(color, lower, upper)
 
   if isinstance(lower, list):
     mask = cv2.inRange(hsv, lower[0], upper[0])
@@ -113,7 +114,7 @@ def calibrate_distance(colors, img=None, scale=1, display=False):
       mask = get_mask(hsv, color)
 
       #find area of color
-      mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5,5), np.uint8), iterations=3)
+      # mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5,5), np.uint8), iterations=3)
       contours, hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
       cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
       
@@ -126,6 +127,7 @@ def calibrate_distance(colors, img=None, scale=1, display=False):
         
         top_pixels.append(y)
       except IndexError as e:
+        print('Error occured detecting', color, e)
         top_pixels.append(-1)
 
       
@@ -139,6 +141,6 @@ def calibrate_distance(colors, img=None, scale=1, display=False):
 
 
 
-img = load_image('test.jpg')
-pixels = calibrate_distance(['red', 'yellow', 'purple', 'pink', 'green'], img, scale=.2, display=True)
+img = load_image('d.jpg')
+pixels = calibrate_distance(['white', 'pink', 'black', 'green'], img, scale=.2, display=True)
 print(pixels)
