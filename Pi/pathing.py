@@ -1,6 +1,6 @@
 #Library for performing robot pathing
 from utils import *
-from detect import detector
+from detect import detector, distance
 
 def find_obj(core):
   '''
@@ -17,7 +17,7 @@ def find_obj(core):
     img = take_image()
     if img is not None:
       #find if object is detected
-      obj_detected, obj_img = detector(img)
+      obj_detected, obj_img, _ = detector(img)
   
   return obj_img
 

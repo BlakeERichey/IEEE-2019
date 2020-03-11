@@ -140,8 +140,8 @@ def calibrate_distance(colors, img=None, scale=1, display=False):
 
 
 
-img = load_image('d.jpg')
-pixels = calibrate_distance(['red', 'black', 'green',], img, scale=.05, display=True)
+img = load_image('calibrate.jpg')
+pixels = calibrate_distance(['red', 'black', 'green',], img, scale=.1, display=True)
 print(pixels)
 if -1 not in pixels: #all colors found
   obj = {

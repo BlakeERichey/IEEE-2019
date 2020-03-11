@@ -1,5 +1,6 @@
-import cv2
 import os
+import cv2
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 import skimage.segmentation as seg
@@ -40,12 +41,12 @@ def foreground_obstructed(img, display = False):
     cv2.destroyAllWindows()
   return (False, len(contours) > 1)[contours is not None]
 
-def detector(img, display = False):
+def detector(img, display = False, scale=.1):
   '''
     returns if an object was found and then returns the closest obj to the camera
   '''
   e1 = cv2.getTickCount()
-  img = cv2.resize(img, None, fx=.1, fy=.1, interpolation=cv2.INTER_AREA)
+  img = cv2.resize(img, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
   obj_in_fg = foreground_obstructed(img, display)
   
   objs = [] #cropped images of objs
@@ -75,7 +76,7 @@ def detector(img, display = False):
     res = objs[coords[0][0]] #ignore primary parent, so coords[1]. [0] gets index number
 
   e2 = cv2.getTickCount()
-  time = (e2 - e1)/ cv2.getTickFrequency()
+  time = (e2 - e1) / cv2.getTickFrequency()
   print("Time taken:", time)
   
   if display and obj_in_fg:
@@ -83,4 +84,33 @@ def detector(img, display = False):
     cv2.imshow("Edges", edges)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-  return res is not None, res
+  return res is not None, res, coords[0][1:] #obj found, cropped img, cooradinates
+
+def distance(coords):
+  """
+    coords: (x,y,w,h)
+    returns lowest, in image, threshold reached. Returns -1 for negligible cases.
+    0 - within view
+    1 - within flipper range
+    2 - within claw range
+  """
+  with open('calibrate.json', 'r') as f:
+    calib_dist = json.load(f)
+
+  #get threshold distances
+  try:
+    claw     = int(calib_dist.get("claw"))
+    flippers = int(calib_dist.get("flippers"))
+    view     = int(calib_dist.get("view")) 
+  except:
+    #need to create class to create errorless function
+    raise ValueError("Distances not calibrated.")
+
+  y_bottom = coords[1]+coords[3]
+
+  thresh = -1
+  for y_coord in [view, flippers, claw]:
+    if y_bottom > y_coord:
+      thresh+=1
+  
+  return thresh
