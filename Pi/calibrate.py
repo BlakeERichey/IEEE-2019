@@ -1,4 +1,5 @@
 import cv2
+import json
 import numpy as np
 from utils import take_image, load_image
 
@@ -42,14 +43,14 @@ def get_thresh(string):
     Takes string of a color name and returns lower and upper thresholds
   '''
   string = string.lower()
-  assert string in ['purple', 'red', 'blue','yellow','pink','black','white', 'green']
+  assert string in ['red','black','green']
 
   color_dict = {
     'red':    np.array([0,   150, 100]), 
-    'pink':   np.array([0,   125, 230]), 
-    'yellow': np.array([35,  150, 100]), 
-    'purple': np.array([150, 150, 100]),
-    'blue':   np.array([120, 150, 100]), 
+    'pink':   np.array([0,   125, 230]),  #does not work
+    'yellow': np.array([35,  150, 100]),  #does not work
+    'purple': np.array([150, 150, 100]),  #does not work
+    'blue':   np.array([120, 150, 100]),  #does not work
     'green':  np.array([60,  150, 100]), 
   }
 
@@ -60,12 +61,10 @@ def get_thresh(string):
     if string == 'black':
       lower, upper = np.array([0,0,0]), np.array([179,255,100])
     else:
-      lower, upper = np.array([0,0,235]), np.array([179,15,255])
+      lower, upper = np.array([0,140,235]), np.array([179,140,255]) #does not work
   else:
     color = color_dict[string]
-    lower, upper = lower_upper(color, min_s=10)
-  
-  # print('Color', string, 'lower', lower, 'Upper', upper)
+    lower, upper = lower_upper(color, h_thresh=20, min_s=10)
   
   return lower, upper
 
@@ -78,7 +77,7 @@ def get_mask(hsv, string):
   '''
   color = string.lower()
   lower, upper = get_thresh(color)
-  print(color, lower, upper)
+  # print(color, lower, upper)
 
   if isinstance(lower, list):
     mask = cv2.inRange(hsv, lower[0], upper[0])
@@ -142,5 +141,14 @@ def calibrate_distance(colors, img=None, scale=1, display=False):
 
 
 img = load_image('d.jpg')
-pixels = calibrate_distance(['white', 'pink', 'black', 'green'], img, scale=.2, display=True)
+pixels = calibrate_distance(['red', 'black', 'green',], img, scale=.05, display=True)
 print(pixels)
+if -1 not in pixels: #all colors found
+  obj = {
+    'claw':     pixels[0],
+    'flippers': pixels[1],
+    'view':     pixels[2]
+  }
+
+  with open('calibrate.json', 'w') as f:
+    json.dump(obj, f)

@@ -55,6 +55,14 @@ def load_image(filename, mode='color'):
   mode = ['gray','color'].index(mode)
   return cv2.imread(filename, mode)
 
+def downscale(img, scale=.1):
+  """
+    img: BGR color scale image
+    scale: ratio of new size to original
+  """
+
+  return cv2.resize(img, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+
 def movement(core):
   '''
     Test all movement options for arduino
