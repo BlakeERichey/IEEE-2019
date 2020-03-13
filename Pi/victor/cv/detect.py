@@ -86,7 +86,7 @@ def detector(img, display = False, scale=.1):
     cv2.destroyAllWindows()
   return res is not None, res, coords[0][1:] #obj found, cropped img, cooradinates
 
-def distance(coords):
+def distance(coords, calib_obj):
   """
     coords: (x,y,w,h)
     returns lowest, in image, threshold reached. Returns -1 for negligible cases.
@@ -94,14 +94,13 @@ def distance(coords):
     1 - within flipper range
     2 - within claw range
   """
-  with open('calibrate.json', 'r') as f:
-    calib_dist = json.load(f)
+  assert calib_obj is not None, "Calibration JSON not provided."
 
   #get threshold distances
   try:
-    claw     = int(calib_dist.get("claw"))
-    flippers = int(calib_dist.get("flippers"))
-    view     = int(calib_dist.get("view")) 
+    claw     = int(calib_obj.get("claw"))
+    flippers = int(calib_obj.get("flippers"))
+    view     = int(calib_obj.get("view")) 
   except:
     #need to create class to create errorless function
     raise ValueError("Distances not calibrated.")

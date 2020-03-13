@@ -1,7 +1,7 @@
 import cv2
 import json
 import numpy as np
-from utils import take_image, load_image
+from victor.utils import take_image, load_image
 
 def squeeze(color):
   '''squeezes an arr into hsv color space'''
@@ -137,18 +137,3 @@ def calibrate_distance(colors, img=None, scale=1, display=False):
         cv2.destroyAllWindows()
 
   return top_pixels
-
-
-
-img = load_image('calibrate.jpg')
-pixels = calibrate_distance(['red', 'black', 'green',], img, scale=.1, display=True)
-print(pixels)
-if -1 not in pixels: #all colors found
-  obj = {
-    'claw':     pixels[0],
-    'flippers': pixels[1],
-    'view':     pixels[2]
-  }
-
-  with open('calibrate.json', 'w') as f:
-    json.dump(obj, f)

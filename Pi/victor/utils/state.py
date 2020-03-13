@@ -8,14 +8,16 @@ class StateManager():
   if os.name == "nt":
     OS = 'windows'
 
-  def __init__(self):
+  def __init__(self, num_devices=2):
     self.nodes = {}			#an arduino
     self.active = 'pi'		#
     self.added_devices = {} #
+
+    self.valid_ids = [str(i) for i in range(num_devices)]
   
   def add_node(self, arduino, device_name, baudrate=9600):
     _id = None
-    while _id not in ['0', '1']:
+    while _id not in self.valid_ids:
       _id = self.getId(arduino)
     self.added_devices.update({_id:device_name})
     
@@ -33,11 +35,10 @@ class StateManager():
     _id = read_serial.decode('utf-8') #returns initial message from arduino
 
     if StateManager.OS == "windows":
-      _id = _id[:-2]
+      _id = _id[:-2]  #remove \r\n character
     else:
-      _id = _id[:-2]
+      _id = _id[:-2]  #remove \r\n character
 
-    # print(_id, type(_id))
     return _id
   
   def __str__(self):
