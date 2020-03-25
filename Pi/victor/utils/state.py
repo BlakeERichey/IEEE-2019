@@ -28,8 +28,10 @@ class StateManager():
     return _id
 
   def getId(self, arduino):
+    # return '1'
     '''gets message from arduino serial.Serial() input stream. interprets the message as an _id'''
     # print("Attempting to read line")
+    print('Im in.')
     read_serial=arduino.readline()
     # print("read serial",read_serial)
     _id = read_serial.decode('utf-8') #returns initial message from arduino
@@ -39,6 +41,7 @@ class StateManager():
     else:
       _id = _id[:-2]  #remove \r\n character
 
+    print('Got id', _id)
     return _id
   
   def __str__(self):

@@ -1,3 +1,4 @@
+#include <Wire.h>
 #include "Motion.h"
 #include <Adafruit_MotorShield.h>
 
@@ -13,11 +14,6 @@ Motion::Motion(int lf,  int lb, int rf, int rb){
   _lb = _AFMS.getMotor(lb);
   _rf = _AFMS.getMotor(rf);
   _rb = _AFMS.getMotor(rb);
-
-  _lf->setSpeed(255);
-  _lb->setSpeed(255);
-  _rf->setSpeed(255);
-  _rb->setSpeed(255);
 }
 
 //stop ceases all motion of motors
@@ -71,4 +67,14 @@ Motion::turnRight(){
 
 Motion::turnLeft(){
     this->rotate(false);
+}
+
+Motion::begin(){
+    int speed = 200;
+    _AFMS.begin();
+    _lf->setSpeed(speed);
+    _lb->setSpeed(speed);
+    _rf->setSpeed(speed);
+    _rb->setSpeed(speed);
+    this->stop();
 }

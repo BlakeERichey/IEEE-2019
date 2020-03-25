@@ -11,6 +11,7 @@ class Servos{
     bool isFlippersClosed;
     
     Servos(int clawPin,  int leftFlipper, int rightFlipper);
+    begin();
     raiseArm(); 
     lowerArm();
     openClaw();
@@ -18,6 +19,7 @@ class Servos{
     openFlippers();
     closeFlippers();
   private:
+    int _clawPin, _leftFlipper, _rightFlipper;
     Servo _claw, _lFlipper, _rFlipper;
     int _openClawAngle, _closeClawAngle; //claw closed and open angles
     int _openFlipperAngle, _closeFlipperAngle; //flippers closed and open angles

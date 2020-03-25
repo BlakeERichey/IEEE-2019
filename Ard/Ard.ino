@@ -3,7 +3,7 @@
 #include "Servos.h"
 
 
-const int NAME = 0;
+const int NAME = 1;
 String active = "pi";
 
 //Attach DC motors
@@ -16,25 +16,33 @@ Motion motors(
 
 //Attach Servos for claw and flippers
 Servos servos(
-  7,            //claw pin
-  10,           //left flipper
-  11            //right flipper
+  9,            //claw pin
+  4,           //left flipper
+  3            //right flipper
 );
 
 void setup() {
   Serial.begin(9600);
+  motors.begin();
+  servos.begin();
 
   while(active == "pi"){
     Serial.println(NAME);
+    delay(1000);
     if(Serial.available() > 0){
       active = "ard";
     }
   }
 
-  Serial.println("Setup Complete.");
+  servos.openClaw();
+  servos.openFlippers();
+
+  // Serial.println("Setup Complete.");
 }
 
 void loop() {
+  // testServos();
+  // testMotion();
   recieveData();
 }
 
@@ -75,11 +83,43 @@ void runCommand(int action){
     case 8:               //OPEN CLAW
       servos.openClaw();
       break;
-    case 9:               //RAISE ARM
-      break;
+    // case 9:               //RAISE ARM
+    //   break;
     
     //Special case must be addressed since requires 2 bytes
-    case 10:              //LOWER ARM
-      break;
+    // case 10:              //LOWER ARM
+    //   break;
   }
+}
+
+
+void testMotion(){
+  runCommand(1);
+  delay(1000);
+  runCommand(0);
+  delay(1000);
+  runCommand(2);
+  delay(1000);
+  runCommand(0);
+  delay(1000);
+
+  runCommand(3);
+  delay(1000);
+  runCommand(0);
+  delay(1000);
+  runCommand(4);
+  delay(1000);
+  runCommand(0);
+  delay(1000);
+}
+
+void testServos(){
+  // servos.closeClaw();
+  // delay(2000);
+  // servos.openClaw();
+  // delay(2000);
+  servos.closeFlippers();
+  delay(2000);
+  servos.openFlippers();
+  delay(2000);
 }

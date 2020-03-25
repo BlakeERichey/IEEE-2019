@@ -9,6 +9,7 @@ class Motion{
   public:
     Motion(int lf,  int lb, int rf, int rb);
     stop();
+    begin(); 
     forward();
     backward();
     turnLeft(); 

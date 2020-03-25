@@ -7,6 +7,10 @@ setup(name='victor',
       author = 'Blake Richey',
       author_email='blake.e.richey@gmail.com',
       install_requires=[
-        "opencv-python>=4.1.2.30","scipy>=1.4.1",
-        "scikit-image>=0.15.0","scikit-learn>=0.22.1"
+        "opencv-python>=4.1.2.30",
+        "scipy>=1.4.1",
+        "matplotlib>=3.1",
+        "pyserial>=3.4",
+        "scikit-image>=0.15.0",
+        "scikit-learn>=0.22.1"
       ],)
