@@ -7,5 +7,7 @@ ACTION_SPACE = {
   'CLOSE_FLIPPERS': 5, 
   'OPEN_FLIPPERS': 6,  
   'CLOSE_CLAW': 7,     
-  'OPEN_CLAW': 8,      
+  'OPEN_CLAW': 8,
+  'RAISE_ARM': 9,
+  'LOWER_ARM': 10,    
 }

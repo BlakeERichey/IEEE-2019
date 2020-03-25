@@ -1,10 +1,12 @@
 #include <Servo.h>
 #include "Motion.h"
 #include "Servos.h"
+#define MAX_BUFFER_LENGTH 2
 
 
-const int NAME = 1;
+const int NAME = 0;
 String active = "pi";
+char buffer[MAX_BUFFER_LENGTH]; //instruction buffer
 
 //Attach DC motors
 Motion motors(
@@ -47,10 +49,26 @@ void loop() {
 }
 
 void recieveData(){
-  if (Serial.available() > 0){//is a char available?
-    active = "ard";                //sets ard to active
-    char msg = Serial.read();      //get the character
-    runCommand(int(msg));
+  int len = 0;
+  if (Serial.available() >= 0){
+    while(Serial.available()>len){//is a char available?
+      len = Serial.available();
+      delay(5); //delay for new characters to arrive
+      if(len>10){
+        break;
+      }
+    }
+  }
+  String instr = ""; //instruction
+  if(len>0){
+    Serial.readBytes(buffer, len); //get the characters
+    Serial.println(len);
+    for(int i = 0; i<len; i++){ //exclude terminal character
+      instr += String(int(buffer[i])-48);
+    }
+    Serial.println(instr);
+    Serial.println(instr.toInt());
+    runCommand(instr.toInt());
   }
 }
 
@@ -83,12 +101,14 @@ void runCommand(int action){
     case 8:               //OPEN CLAW
       servos.openClaw();
       break;
-    // case 9:               //RAISE ARM
-    //   break;
     
     //Special case must be addressed since requires 2 bytes
-    // case 10:              //LOWER ARM
-    //   break;
+    case 9:               //RAISE ARM
+      motors.forward();
+      break;
+    case 10:              //LOWER ARM
+      motors.backward();
+      break;
   }
 }
 
@@ -114,10 +134,10 @@ void testMotion(){
 }
 
 void testServos(){
-  // servos.closeClaw();
-  // delay(2000);
-  // servos.openClaw();
-  // delay(2000);
+  servos.closeClaw();
+  delay(2000);
+  servos.openClaw();
+  delay(2000);
   servos.closeFlippers();
   delay(2000);
   servos.openFlippers();

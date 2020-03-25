@@ -2,7 +2,7 @@ import time
 import inputs
 from victor import Brain
 
-brain = Brain(2)
+brain = Brain(1)
 
 print(inputs.devices.gamepads)
 
@@ -22,6 +22,8 @@ action_space = {
     'BTN_TR 1':     "CLOSE_CLAW",
     'BTN_Z 1':      "CLOSE_FLIPPERS",
     'BTN_WEST 1':   "OPEN_FLIPPERS",
+    'BTN_EAST 1':   "RAISE_ARM",
+    'BTN_C 1':      "LOWER_ARM",
 }
 
 print("Ready to receive")
@@ -36,4 +38,6 @@ while True:
             ard = "0"
             if "ABS" not in key:
                 ard = "1"
+            if 'EAST' in key or 'C' in key:
+                ard = "0"
             brain.send_act(action, ard)
