@@ -1,6 +1,11 @@
 #include <Servo.h>
 #include "Servos.h"
 #include <Arduino.h>
+#include <LSS.h>
+
+// ID set to default LSS ID = 0
+#define LSS_ID		(0)
+#define LSS_BAUD	(LSS_DefaultBaud)
 
 Servos::Servos(int clawPin, int leftFlipper, int rightFlipper){
   isClawClosed       = true;
@@ -17,11 +22,13 @@ Servos::Servos(int clawPin, int leftFlipper, int rightFlipper){
 }
 
 Servos::raiseArm(){
-  //not implemented
+  _arm.moveT(700, 2000);
+  delay(2050);
 }
 
 Servos::lowerArm(){
-  //not implemented
+  _arm.moveT(-700, 2000);
+  delay(2050);
 }
 
 Servos::openClaw(){
@@ -79,4 +86,10 @@ Servos::begin(){
   _claw.attach(_clawPin);
   _lFlipper.attach(_leftFlipper);
   _rFlipper.attach(_rightFlipper);
+  
+  //Initialize arm and move to 0deg
+  _arm = LSS(LSS_ID);
+  LSS::initBus(Serial1, LSS_BAUD);
+  _arm.move(0);
+  delay(2000);
 }

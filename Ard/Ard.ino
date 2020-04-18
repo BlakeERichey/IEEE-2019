@@ -4,7 +4,7 @@
 #define MAX_BUFFER_LENGTH 2
 
 
-const int NAME = 0;
+const int NAME = 1;
 String active = "pi";
 char buffer[MAX_BUFFER_LENGTH]; //instruction buffer
 
@@ -18,7 +18,7 @@ Motion motors(
 
 //Attach Servos for claw and flippers
 Servos servos(
-  9,            //claw pin
+  9,           //claw pin
   4,           //left flipper
   3            //right flipper
 );
@@ -27,7 +27,10 @@ void setup() {
   Serial.begin(9600);
   motors.begin();
   servos.begin();
+  servos.openClaw();
+  servos.openFlippers();
 
+  //wait for Pi to configure COMs
   while(active == "pi"){
     Serial.println(NAME);
     delay(1000);
@@ -35,9 +38,6 @@ void setup() {
       active = "ard";
     }
   }
-
-  servos.openClaw();
-  servos.openFlippers();
 
   // Serial.println("Setup Complete.");
 }
@@ -48,12 +48,13 @@ void loop() {
   recieveData();
 }
 
+//received data from Raspberry Pi
 void recieveData(){
   int len = 0;
   if (Serial.available() >= 0){
     while(Serial.available()>len){//is a char available?
       len = Serial.available();
-      delay(5); //delay for new characters to arrive
+      delay(5); //delay 5ms for new characters to arrive
       if(len>10){
         break;
       }
@@ -101,13 +102,11 @@ void runCommand(int action){
     case 8:               //OPEN CLAW
       servos.openClaw();
       break;
-    
-    //Special case must be addressed since requires 2 bytes
     case 9:               //RAISE ARM
-      motors.forward();
+      servos.raiseArm();
       break;
     case 10:              //LOWER ARM
-      motors.backward();
+      servos.lowerArm();
       break;
   }
 }
@@ -141,5 +140,9 @@ void testServos(){
   servos.closeFlippers();
   delay(2000);
   servos.openFlippers();
+  delay(2000);
+  servos.raiseArm();
+  delay(2000);
+  servos.lowerArm();
   delay(2000);
 }

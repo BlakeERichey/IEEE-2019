@@ -2,7 +2,7 @@ import time
 import inputs
 from victor import Brain
 
-brain = Brain(1)
+brain = Brain(2)
 
 print(inputs.devices.gamepads)
 
@@ -13,13 +13,13 @@ if len(pads) == 0:
 
 action_space = {
     'ABS_HAT0X 0':  "STOP",
-    'ABS_HAT0X -1': "TURN_LEFT",
-    'ABS_HAT0X 1':  "TURN_RIGHT",
-    'ABS_HAT0Y 1':  "MOVE_BACKWARD",
-    'ABS_HAT0Y -1': "MOVE_FORWARD",
+    'ABS_HAT0X -1': "TURN_LEFT",        #LEft  D Pad
+    'ABS_HAT0X 1':  "TURN_RIGHT",       #Right D Pad
+    'ABS_HAT0Y 1':  "MOVE_BACKWARD",    #Down  D Pad
+    'ABS_HAT0Y -1': "MOVE_FORWARD",     #Up    D Pad
     'ABS_HAT0Y 0':  "STOP",
-    'BTN_TL 1':     "OPEN_CLAW",
-    'BTN_TR 1':     "CLOSE_CLAW",
+    'BTN_TL 1':     "OPEN_CLAW",        
+    'BTN_TR 1':     "CLOSE_CLAW",       
     'BTN_Z 1':      "CLOSE_FLIPPERS",
     'BTN_WEST 1':   "OPEN_FLIPPERS",
     'BTN_EAST 1':   "RAISE_ARM",

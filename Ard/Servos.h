@@ -4,6 +4,7 @@
 #ifndef Servos_h
 #define Servos_h
 #include <Servo.h>
+#include <LSS.h>
 
 class Servos{
   public:
@@ -19,6 +20,7 @@ class Servos{
     openFlippers();
     closeFlippers();
   private:
+    LSS _arm;
     int _clawPin, _leftFlipper, _rightFlipper;
     Servo _claw, _lFlipper, _rFlipper;
     int _openClawAngle, _closeClawAngle; //claw closed and open angles
