@@ -18,12 +18,12 @@ action_space = {
     'ABS_HAT0Y 1':  "MOVE_BACKWARD",    #Down  D Pad
     'ABS_HAT0Y -1': "MOVE_FORWARD",     #Up    D Pad
     'ABS_HAT0Y 0':  "STOP",
-    'BTN_TL 1':     "OPEN_CLAW",        
-    'BTN_TR 1':     "CLOSE_CLAW",       
-    'BTN_Z 1':      "CLOSE_FLIPPERS",
-    'BTN_WEST 1':   "OPEN_FLIPPERS",
-    'BTN_EAST 1':   "RAISE_ARM",
-    'BTN_C 1':      "LOWER_ARM",
+    'BTN_TL 1':     "OPEN_CLAW",        #RIGHT BUMPER
+    'BTN_TR 1':     "CLOSE_CLAW",       #LEFT BUMPER
+    'BTN_SOUTH 1':  "CLOSE_FLIPPERS",   #A
+    'BTN_EAST 1':   "OPEN_FLIPPERS",    #B
+    'BTN_NORTH 1':  "RAISE_ARM",        #X
+    'BTN_WEST 1':   "LOWER_ARM",        #Y
 }
 
 print("Ready to receive")
@@ -38,6 +38,4 @@ while True:
             ard = "0"
             if "ABS" not in key:
                 ard = "1"
-            if 'EAST' in key or 'C' in key:
-                ard = "0"
             brain.send_act(action, ard)

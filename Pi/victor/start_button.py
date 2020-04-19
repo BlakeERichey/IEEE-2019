@@ -12,7 +12,7 @@ while True:
     if not GPIO.input(25) and not run:
         run = True
         print('Button pressed')
-        os.system('python /home/pi/Desktop/IEEE-2019/brain.py')
+        os.system('python /home/pi/Desktop/IEEE-2019/Pi/test/gamepad.py')
     elif GPIO.input(25):
         print('Button not pressed')
         run = False

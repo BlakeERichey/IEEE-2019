@@ -10,6 +10,7 @@ class Servos{
   public:
     bool isClawClosed;
     bool isFlippersClosed;
+    bool isArmLowered;
     
     Servos(int clawPin,  int leftFlipper, int rightFlipper);
     begin();

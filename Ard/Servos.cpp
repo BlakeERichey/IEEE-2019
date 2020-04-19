@@ -10,6 +10,7 @@
 Servos::Servos(int clawPin, int leftFlipper, int rightFlipper){
   isClawClosed       = true;
   isFlippersClosed   = true;
+  isArmLowered       = true;
 
   _openClawAngle     = 135;
   _closeClawAngle    = 180;
@@ -22,13 +23,19 @@ Servos::Servos(int clawPin, int leftFlipper, int rightFlipper){
 }
 
 Servos::raiseArm(){
-  _arm.moveT(700, 2000);
-  delay(2050);
+  if(isArmLowered){
+    _arm.moveT(700, 2000);
+    delay(2050);
+    isArmLowered = false;
+  }
 }
 
 Servos::lowerArm(){
-  _arm.moveT(-700, 2000);
-  delay(2050);
+  if(!isArmLowered){
+    _arm.moveT(-700, 2000);
+    delay(2050);
+    isArmLowered = true;
+  }
 }
 
 Servos::openClaw(){
